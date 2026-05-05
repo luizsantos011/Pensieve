@@ -1,6 +1,6 @@
 package me.luiz.penseira;
 
-import me.luiz.penseira.Services.TelegramService;
+import me.luiz.penseira.service.TelegramService;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;

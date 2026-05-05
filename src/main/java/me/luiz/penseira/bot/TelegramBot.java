@@ -1,9 +1,9 @@
-package me.luiz.penseira.Services;
+package me.luiz.penseira.bot;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class TelegramService extends TelegramLongPollingBot {
+public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
