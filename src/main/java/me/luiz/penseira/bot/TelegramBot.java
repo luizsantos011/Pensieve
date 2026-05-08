@@ -1,6 +1,7 @@
     package me.luiz.penseira.bot;
 
     import io.github.cdimascio.dotenv.Dotenv;
+    import me.luiz.penseira.contracts.ILogger;
     import org.telegram.telegrambots.bots.TelegramLongPollingBot;
     import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
     import org.telegram.telegrambots.meta.api.objects.Update;
@@ -10,10 +11,15 @@
     import java.util.stream.Collectors;
 
     public class TelegramBot extends TelegramLongPollingBot {
+        private final ILogger logger;
         private final Dotenv dotenv = Dotenv.load();
         private final List<Long> whitelist = carregarWhitelist();
         private final Map<Long, Long> ultimaMensagemPorUsuario = new HashMap<>();
         private static final long intervaloMinimo = 5000;
+
+        public TelegramBot(ILogger logger) {
+            this.logger = logger;
+        }
 
         @Override
         public String getBotUsername() {
@@ -28,11 +34,11 @@
         @Override
         public void onUpdateReceived(Update update) {
             if (update.hasMessage()) {
+                logger.registrarLog("mensagem recebida.");
                 var message = update.getMessage();
                 long userId = message.getFrom().getId();
                 SendMessage msg = new SendMessage();
                 //verificação de usuários autorizados
-                List<Long> whitelist = carregarWhitelist();
                 if(!whitelist.contains(userId)){
                     System.out.println("Apenas bruxos autorizados podem acessar esta penseira.");
                     System.out.println(userId);
@@ -54,24 +60,44 @@
                 //verificação do tipo da mensagem
                 if (message.hasText()) {
                     String mensagem = message.getText();
+                    String usuarioNome = message.getFrom().getFirstName();
+                    msg.setChatId(message.getChatId().toString());
                     if(mensagem.startsWith("/")) {
-                        msg.setChatId(message.getChatId().toString());
-                        msg.setText("PENSEIRA\n" +
+                        if(mensagem.equals("/start")){
+                            msg.setText("PENSEIRA\n" +
+                                    "\n" +
+                                    "Sistema de Armazenamento de Memórias\n" +
+                                    "\n" +
+                                    "Prezado(a) bruxo(a) " + usuarioNome + "\n" +
+                                    "\n" +
+                                    "Seu acesso à Penseira foi registrado.\n" +
+                                    "\n" +
+                                    "Este ambiente permite o armazenamento e a organização de memórias e registros, que permanecerão disponíveis para consulta sempre que necessário.\n" +
+                                    "\n" +
+                                    "Recomenda-se atenção ao conteúdo que decide preservar.\n" +
+                                    "\n" +
+                                    "A Penseira encontra-se ativa.\n");
+                            try {
+                                execute(msg);
+                            } catch (TelegramApiException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }else {
+                        msg.setText("A Penseira recebeu uma instrução que não pôde ser reconhecida.\n" +
                                 "\n" +
-                                "Sistema de Armazenamento de Memórias\n" +
+                                "Para navegar corretamente por este ambiente, utilize um dos comandos abaixo:\n" +
                                 "\n" +
-                                "Prezado(a) usuário(a),\n" +
+                                "/start - abrir acesso às águas da Penseira\n" +
+                                "/guardar — confiar uma nova memória à Penseira\n" +
+                                "/memorias — revisitar fragmentos armazenados\n" +
+                                "/remover — desfazer o vínculo de uma memória\n" +
+                                "/ajuda — consultar instruções disponíveis\n" +
                                 "\n" +
-                                "Seu acesso à Penseira foi registrado.\n" +
-                                "\n" +
-                                "Este ambiente permite o armazenamento e a organização de memórias e registros, que permanecerão disponíveis para consulta sempre que necessário.\n" +
-                                "\n" +
-                                "Recomenda-se atenção ao conteúdo que decide preservar.\n" +
-                                "\n" +
-                                "A Penseira encontra-se ativa.\n");
-                        try {
+                                "A Penseira responde apenas a instruções válidas.\n");
+                        try{
                             execute(msg);
-                        } catch (TelegramApiException e) {
+                        }catch (TelegramApiException e){
                             throw new RuntimeException(e);
                         }
                     }
