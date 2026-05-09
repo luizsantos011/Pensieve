@@ -16,6 +16,7 @@
         private final List<Long> whitelist = carregarWhitelist();
         private final Map<Long, Long> ultimaMensagemPorUsuario = new HashMap<>();
         private static final long intervaloMinimo = 5000;
+        private int contadorMensagens = 0;
 
         public TelegramBot(ILogger logger) {
             this.logger = logger;
@@ -34,6 +35,7 @@
         @Override
         public void onUpdateReceived(Update update) {
             if (update.hasMessage()) {
+                contadorMensagens++;
                 logger.registrarLog("mensagem recebida.");
                 var message = update.getMessage();
                 long userId = message.getFrom().getId();
@@ -82,6 +84,8 @@
                             } catch (TelegramApiException e) {
                                 throw new RuntimeException(e);
                             }
+                        }else if(mensagem.equals("/status")){
+                            System.out.println("A Penseira recebeu um comando de status. Total de mensagens recebidas: " + contadorMensagens);
                         }
                     }else {
                         msg.setText("A Penseira recebeu uma instrução que não pôde ser reconhecida.\n" +
@@ -102,6 +106,7 @@
                         }
                     }
                 }else if (message.hasDocument()) {
+                    contadorMensagens++;
                     var doc = message.getDocument();
                     String nomeArquivo = doc.getFileName().toLowerCase();
                     List<String> extensoesPermitidas = Arrays.asList(".txt", ".jpg", ".pdf", "png");
