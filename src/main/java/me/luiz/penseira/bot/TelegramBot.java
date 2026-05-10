@@ -1,6 +1,7 @@
     package me.luiz.penseira.bot;
 
     import io.github.cdimascio.dotenv.Dotenv;
+    import me.luiz.penseira.contracts.IComando;
     import me.luiz.penseira.contracts.ILogger;
     import org.telegram.telegrambots.bots.TelegramLongPollingBot;
     import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,11 +18,12 @@
         private final Dotenv dotenv = Dotenv.load();
         private final List<Long> whitelist = carregarWhitelist();
         private final Map<Long, Long> ultimaMensagemPorUsuario = new HashMap<>();
+        private final Map<String, IComando> comandoMap = new HashMap<>();
         private static final long intervaloMinimo = 5000;
         private int contadorMensagens = 0;
-        private LocalDateTime horario = LocalDateTime.parse(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now()));
 
-        public TelegramBot(ILogger logger) {
+        public TelegramBot(ILogger logger,  IComando comando) {
+            inicializarComandos();
             this.logger = logger;
         }
 
@@ -64,61 +66,15 @@
                 System.out.println("Mensagem recebida de " + userId);
                 //verificação do tipo da mensagem
                 if (message.hasText()) {
+                    contadorMensagens++;
                     String mensagem = message.getText();
                     String usuarioNome = message.getFrom().getFirstName();
                     msg.setChatId(message.getChatId().toString());
-                    if(mensagem.startsWith("/")) {
-                        if(mensagem.equals("/start")){
-                            msg.setText("PENSEIRA\n" +
-                                    "\n" +
-                                    "Sistema de Armazenamento de Memórias\n" +
-                                    "\n" +
-                                    "Prezado(a) bruxo(a) " + usuarioNome + "\n" +
-                                    "\n" +
-                                    "Seu acesso à Penseira foi registrado.\n" +
-                                    "\n" +
-                                    "Este ambiente permite o armazenamento e a organização de memórias e registros, que permanecerão disponíveis para consulta sempre que necessário.\n" +
-                                    "\n" +
-                                    "Recomenda-se atenção ao conteúdo que decide preservar.\n" +
-                                    "\n" +
-                                    "A Penseira encontra-se ativa.\n");
-                            try {
-                                execute(msg);
-                            } catch (TelegramApiException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }else if(mensagem.equals("/status")){
-                            msg.setText("A Penseira recebeu " + contadorMensagens + " mensagens desde que foi ativada.");
-                            try {
-                                execute(msg);
-                            }catch (TelegramApiException e){
-                                throw new RuntimeException(e);
-                            }
-                        }else if(mensagem.equals("/tempo")){
-                            msg.setText("As águas da Penseira se movem com o fluxo do tempo… e agora indicam: " + horario);
-                            try {
-                                execute(msg);
-                            }catch (TelegramApiException e){
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }else {
-                        msg.setText("A Penseira recebeu uma instrução que não pôde ser reconhecida.\n" +
-                                "\n" +
-                                "Para navegar corretamente por este ambiente, utilize um dos comandos abaixo:\n" +
-                                "\n" +
-                                "/start - abrir acesso às águas da Penseira\n" +
-                                "/guardar — confiar uma nova memória à Penseira\n" +
-                                "/memorias — revisitar fragmentos armazenados\n" +
-                                "/remover — desfazer o vínculo de uma memória\n" +
-                                "/ajuda — consultar instruções disponíveis\n" +
-                                "\n" +
-                                "A Penseira responde apenas a instruções válidas.\n");
-                        try{
-                            execute(msg);
-                        }catch (TelegramApiException e){
-                            throw new RuntimeException(e);
-                        }
+                    IComando comando = comandoMap.get(mensagem);
+                    if(comando != null){
+                        comando.executar(msg, update);
+                    } else{
+                        System.out.println("A Penseira recebeu uma instrução que não pôde ser reconhecida.");
                     }
                 }else if (message.hasDocument()) {
                     contadorMensagens++;
@@ -141,5 +97,52 @@
                     .map(String::trim)
                     .map(Long::parseLong)
                     .collect(Collectors.toList());
+        }
+        private void inicializarComandos() {
+            comandoMap.put("/start", (msg,  update) -> {
+                msg.setText("A Penseira recebeu uma instrução que não pôde ser reconhecida.\n" +
+                        "\n" +
+                        "Para navegar corretamente por este ambiente, utilize um dos comandos abaixo:\n" +
+                        "\n" +
+                        "/start - abrir acesso às águas da Penseira\n" +
+                        "/guardar — confiar uma nova memória à Penseira\n" +
+                        "/memorias — revisitar fragmentos armazenados\n" +
+                        "/remover — desfazer o vínculo de uma memória\n" +
+                        "/ajuda — consultar instruções disponíveis\n" +
+                        "\n" +
+                        "A Penseira responde apenas a instruções válidas.\n");
+                try {
+                    execute(msg);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            comandoMap.put("/status", (msg,  update) -> {
+                msg.setText("A Penseira recebeu " + contadorMensagens + " mensagens desde que foi ativada.");
+                try {
+                    execute(msg);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            comandoMap.put("/tempo", (msg,  update) -> {
+                msg.setText("As águas da Penseira se movem com o fluxo do tempo… e agora indicam: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                try {
+                    execute(msg);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        private enum Comando {
+            START("/start"),
+            STATUS("/status"),
+            MEMORIAS("/tempo");
+
+            private final String comando;
+
+            Comando(String comando) {
+                this.comando = comando;
+            }
         }
     }
