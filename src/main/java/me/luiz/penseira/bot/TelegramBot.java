@@ -8,6 +8,9 @@
     import org.telegram.telegrambots.meta.api.objects.Update;
     import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+    import java.io.File;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
     import java.time.LocalDateTime;
     import java.time.format.DateTimeFormatter;
     import java.util.*;
@@ -18,11 +21,11 @@
         private final Dotenv dotenv = Dotenv.load();
         private final List<Long> whitelist = carregarWhitelist();
         private final Map<Long, Long> ultimaMensagemPorUsuario = new HashMap<>();
-        private final Map<String, IComando> comandoMap = new HashMap<>();
+        private final Map<String, IComando> comandosMap = new HashMap<>();
         private static final long intervaloMinimo = 5000;
         private int contadorMensagens = 0;
 
-        public TelegramBot(ILogger logger,  IComando comando) {
+        public TelegramBot(ILogger logger) {
             inicializarComandos();
             this.logger = logger;
         }
@@ -70,7 +73,7 @@
                     String mensagem = message.getText();
                     String usuarioNome = message.getFrom().getFirstName();
                     msg.setChatId(message.getChatId().toString());
-                    IComando comando = comandoMap.get(mensagem);
+                    IComando comando = comandosMap.get(mensagem);
                     if(comando != null){
                         comando.executar(msg, update);
                     } else{
@@ -99,7 +102,7 @@
                     .collect(Collectors.toList());
         }
         private void inicializarComandos() {
-            comandoMap.put("/start", (msg,  update) -> {
+            comandosMap.put("/start", (msg, update) -> {
                 msg.setText("A Penseira recebeu uma instrução que não pôde ser reconhecida.\n" +
                         "\n" +
                         "Para navegar corretamente por este ambiente, utilize um dos comandos abaixo:\n" +
@@ -117,7 +120,7 @@
                     throw new RuntimeException(e);
                 }
             });
-            comandoMap.put("/status", (msg,  update) -> {
+            comandosMap.put("/status", (msg, update) -> {
                 msg.setText("A Penseira recebeu " + contadorMensagens + " mensagens desde que foi ativada.");
                 try {
                     execute(msg);
@@ -125,7 +128,7 @@
                     throw new RuntimeException(e);
                 }
             });
-            comandoMap.put("/tempo", (msg,  update) -> {
+            comandosMap.put("/tempo", (msg, update) -> {
                 msg.setText("As águas da Penseira se movem com o fluxo do tempo… e agora indicam: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
                 try {
                     execute(msg);
@@ -133,7 +136,7 @@
                     throw new RuntimeException(e);
                 }
             });
-            comandoMap.put("/reescrever", (msg,  update) -> {
+            comandosMap.put("/reescrever", (msg, update) -> {
                 String mensagemCompleta = update.getMessage().getText().replace("/reescrever", "").trim();
                 String mensagemRevertida = mensagemCompleta.isEmpty() ? "A Penseira espera uma mensagem para reescrever." : new StringBuilder(mensagemCompleta).reverse().toString();
                 msg.setText(mensagemRevertida);
@@ -141,12 +144,43 @@
                     execute(msg);
                 } catch (TelegramApiException e) {}
             });
+            comandosMap.put("/sorteio", (msg, update) -> {
+                String frases = "O que parece pequeno hoje ecoará em caminhos inesperados;\n" +
+                        "O fluxo do dia carrega mais do que os olhos podem compreender;\n" +
+                        "Aquilo que você ignora ainda assim permanece ao seu redor;\n" +
+                        "O inesperado já começou a se formar antes mesmo de ser notado;\n" +
+                        "As escolhas de agora projetam sombras que ainda não se revelaram;\n" +
+                        "A clareza virá quando o ruído perder força;\n" +
+                        "Um gesto simples poderá alterar a direção de tudo ao redor;\n" +
+                        "O que está confuso agora apenas ainda não encontrou sua forma;\n" +
+                        "A resposta pode surgir antes mesmo da pergunta ser feita;\n" +
+                        "A estabilidade é apenas o intervalo entre mudanças;\n" +
+                        "Nem todo caminho visível leva ao destino que parece prometer;\n" +
+                        "Algo que você considera fixo já está em movimento;\n" +
+                        "O silêncio carrega mais do que palavras ousam revelar;\n" +
+                        "Um desvio inesperado interromperá a ordem habitual do dia;\n" +
+                        "O que foi ignorado encontrará forma novamente;\n" +
+                        "Um encontro aparentemente casual não será casual por completo;\n" +
+                        "Decisões pequenas não permanecem pequenas por muito tempo;\n" +
+                        "Algo esquecido ainda exerce influência sobre o presente;\n" +
+                        "O dia resistirá a seguir um padrão previsível;\n" +
+                        "O equilíbrio será ajustado por detalhes quase invisíveis";
+                String[] frasesLista = frases.replace("\n", "").split(";");
+                String fraseSorteada = frasesLista[new Random().nextInt(frasesLista.length)];
+                msg.setText(fraseSorteada);
+                try {
+                    execute(msg);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
         private enum Comando {
             START("/start"),
             STATUS("/status"),
             TEMPO("/tempo"),
-            REESCREVER("/reescrever"),;
+            REESCREVER("/reescrever"),
+            SORTEIO("/sorteio"),;
 
             private final String comando;
 
