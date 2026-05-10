@@ -7,6 +7,8 @@
     import org.telegram.telegrambots.meta.api.objects.Update;
     import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
     import java.util.*;
     import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@
         private final Map<Long, Long> ultimaMensagemPorUsuario = new HashMap<>();
         private static final long intervaloMinimo = 5000;
         private int contadorMensagens = 0;
+        private LocalDateTime horario = LocalDateTime.parse(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(LocalDateTime.now()));
 
         public TelegramBot(ILogger logger) {
             this.logger = logger;
@@ -85,7 +88,19 @@
                                 throw new RuntimeException(e);
                             }
                         }else if(mensagem.equals("/status")){
-                            System.out.println("A Penseira recebeu um comando de status. Total de mensagens recebidas: " + contadorMensagens);
+                            msg.setText("A Penseira recebeu " + contadorMensagens + " mensagens desde que foi ativada.");
+                            try {
+                                execute(msg);
+                            }catch (TelegramApiException e){
+                                throw new RuntimeException(e);
+                            }
+                        }else if(mensagem.equals("/tempo")){
+                            msg.setText("As águas da Penseira se movem com o fluxo do tempo… e agora indicam: " + horario);
+                            try {
+                                execute(msg);
+                            }catch (TelegramApiException e){
+                                throw new RuntimeException(e);
+                            }
                         }
                     }else {
                         msg.setText("A Penseira recebeu uma instrução que não pôde ser reconhecida.\n" +
