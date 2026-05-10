@@ -133,11 +133,20 @@
                     throw new RuntimeException(e);
                 }
             });
+            comandoMap.put("/reescrever", (msg,  update) -> {
+                String mensagemCompleta = update.getMessage().getText().replace("/reescrever", "").trim();
+                String mensagemRevertida = mensagemCompleta.isEmpty() ? "A Penseira espera uma mensagem para reescrever." : new StringBuilder(mensagemCompleta).reverse().toString();
+                msg.setText(mensagemRevertida);
+                try {
+                    execute(msg);
+                } catch (TelegramApiException e) {}
+            });
         }
         private enum Comando {
             START("/start"),
             STATUS("/status"),
-            MEMORIAS("/tempo");
+            TEMPO("/tempo"),
+            REESCREVER("/reescrever"),;
 
             private final String comando;
 
