@@ -74,6 +74,10 @@
                     String usuarioNome = message.getFrom().getFirstName();
                     msg.setChatId(message.getChatId().toString());
                     IComando comando = comandosMap.get(mensagem);
+                    if(mensagem.length() > 500){
+                        System.out.println("Bruxo " + usuarioNome + " tentou conjurar um feitiço muito complexo! A Penseira não pode processar mensagens tão longas.");
+                        return;
+                    }
                     if(comando != null){
                         comando.executar(msg, update);
                     } else{
