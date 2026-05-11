@@ -24,9 +24,12 @@
         private final Map<String, IComando> comandosMap = new HashMap<>();
         private static final long intervaloMinimo = 5000;
         private int contadorMensagens = 0;
+        private final Map<String, String> dicionarioMap = new HashMap<>();
 
+        //construtor do bot
         public TelegramBot(ILogger logger) {
             inicializarComandos();
+            inicializarDicionario();
             this.logger = logger;
         }
 
@@ -80,8 +83,18 @@
                     }
                     if(comando != null){
                         comando.executar(msg, update);
-                    } else{
-                        System.out.println("A Penseira recebeu uma instrução que não pôde ser reconhecida.");
+                    }else{
+                        String definicao = dicionarioMap.get(mensagem.toLowerCase());
+                        if(definicao != null){
+                            msg.setText(definicao);
+                            try{
+                                execute(msg);
+                            }catch (TelegramApiException e){
+                                throw new RuntimeException(e);
+                            }
+                        }else{
+                            System.out.println("A Penseira recebeu uma instrução que não pôde ser reconhecida.");
+                        }
                     }
                 }else if (message.hasDocument()) {
                     contadorMensagens++;
@@ -178,6 +191,15 @@
                     throw new RuntimeException(e);
                 }
             });
+        }
+
+        private void inicializarDicionario() {
+            dicionarioMap.put("penseira", "Um recipiente mágico usado para armazenar e revisar memórias.");
+            dicionarioMap.put("memória", "Uma lembrança ou experiência que pode ser armazenada na Penseira.");
+            dicionarioMap.put("bruxo", "Um indivíduo que possui habilidades mágicas e pode acessar a Penseira.");
+            dicionarioMap.put("feitiço", "Uma ação mágica conjurada por um bruxo, que pode afetar a Penseira ou o ambiente ao redor.");
+            dicionarioMap.put("sorteio", "Um comando que gera uma frase enigmática para reflexão.");
+            dicionarioMap.put("lumos", "feitiço que conjura luz na ponta da varinha, permitindo ao bruxo iluminar o ambiente ao seu redor.");
         }
         private enum Comando {
             START("/start"),
