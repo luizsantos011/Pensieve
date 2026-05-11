@@ -1,6 +1,7 @@
     package me.luiz.penseira.bot;
 
     import io.github.cdimascio.dotenv.Dotenv;
+    import me.luiz.penseira.Exceptions.AcessoNegadoException;
     import me.luiz.penseira.contracts.IComando;
     import me.luiz.penseira.contracts.ILogger;
     import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -45,6 +46,16 @@
 
         @Override
         public void onUpdateReceived(Update update) {
+            try{
+                processarMensagem(update);
+            }catch (AcessoNegadoException e){
+                logger.registrarLog("Tentativa de acesso por usuario não autorizado.");
+            }catch (Exception e){
+                logger.registrarLog("Erro inesperado." + e.getMessage());
+            }
+        }
+
+        private void processarMensagem(Update update) {
             if (update.hasMessage()) {
                 contadorMensagens++;
                 logger.registrarLog("mensagem recebida.");
@@ -53,9 +64,7 @@
                 SendMessage msg = new SendMessage();
                 //verificação de usuários autorizados
                 if(!whitelist.contains(userId)){
-                    System.out.println("Apenas bruxos autorizados podem acessar esta penseira.");
-                    System.out.println(userId);
-                    return;
+                    throw new AcessoNegadoException("Apenas bruxos autorizados podem acessar esta penseira.");
                 }
                 //verificação de frequência de mensagens
                 long agora = System.currentTimeMillis();
@@ -118,6 +127,7 @@
                     .map(Long::parseLong)
                     .collect(Collectors.toList());
         }
+
         private void inicializarComandos() {
             comandosMap.put("/start", (msg, update) -> {
                 msg.setText("A Penseira recebeu uma instrução que não pôde ser reconhecida.\n" +
@@ -201,6 +211,7 @@
             dicionarioMap.put("sorteio", "Um comando que gera uma frase enigmática para reflexão.");
             dicionarioMap.put("lumos", "feitiço que conjura luz na ponta da varinha, permitindo ao bruxo iluminar o ambiente ao seu redor.");
         }
+
         private enum Comando {
             START("/start"),
             STATUS("/status"),
