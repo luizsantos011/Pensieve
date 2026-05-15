@@ -3,6 +3,7 @@ package me.luiz.penseira.bot;
 import io.github.cdimascio.dotenv.Dotenv;
 import me.luiz.penseira.Exceptions.AcessoNegadoException;
 import me.luiz.penseira.contracts.IComando;
+import me.luiz.penseira.contracts.ILembrancaRepository;
 import me.luiz.penseira.contracts.ILogger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,11 +24,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     private static final long MIN_INTERVAL_MS = 5000;
     private int messageCounter = 0;
     private final Map<String, String> dictionaryMap = new HashMap<>();
+    private final ILembrancaRepository lembrancaRepository;
 
-    public TelegramBot(ILogger logger) {
+    public TelegramBot(ILogger logger,  ILembrancaRepository lembrancaRepository) {
         initializeCommands();
         initializeDictionary();
         this.logger = logger;
+        this.lembrancaRepository = lembrancaRepository;
     }
 
     @Override
