@@ -1,14 +1,34 @@
 package me.luiz.penseira.Controller;
 
+import me.luiz.penseira.bot.TelegramBot;
+import me.luiz.penseira.contracts.ILembrancaRepository;
 import me.luiz.penseira.contracts.ILogger;
 import me.luiz.penseira.service.LogService;
+import me.luiz.penseira.service.PenseiraService;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.util.logging.Logger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class BotController {
+    private final Path caminhoArquivo = Paths.get("memorias.txt");
     private final ILogger logger;
+    private final ILembrancaRepository penseiraService;
 
     public BotController() {
-        this.logger = new LogService();
+        this.logger = new LogService(Paths.get("logs.txt"));
+        this.penseiraService = new PenseiraService(caminhoArquivo);
+    }
+
+    public void iniciarBot(){
+        try{
+            TelegramBot bot = new TelegramBot(logger, penseiraService);
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+            botsApi.registerBot(bot);
+            logger.registrarLog("Bot iniciado com sucesso.");
+        }catch (Exception e){
+            logger.registrarLog("Erro ao iniciar o bot: " + e.getMessage());
+        }
     }
 }
