@@ -1,0 +1,17 @@
+[16/05/2026 21:16:10] Bot iniciado com sucesso.
+[16/05/2026 23:32:03] Mensagem recebida!
+[16/05/2026 23:32:08] Mensagem recebida!
+[16/05/2026 23:32:13] Mensagem recebida!
+[16/05/2026 23:32:13] erro de negocio
+[16/05/2026 23:32:13] Tentativa de acesso por usuario não autorizado.
+[16/05/2026 23:32:42] Mensagem recebida!
+[16/05/2026 23:33:09] Mensagem recebida!
+[16/05/2026 23:33:25] Mensagem recebida!
+[16/05/2026 23:33:30] Mensagem recebida!
+[16/05/2026 23:33:30] erro de negocio
+[16/05/2026 23:33:30] Tentativa de acesso por usuario não autorizado.
+[16/05/2026 23:33:37] Mensagem recebida!
+[16/05/2026 23:34:35] Mensagem recebida!
+[16/05/2026 23:35:00] Mensagem recebida!
+[16/05/2026 23:37:33] Mensagem recebida!
+[16/05/2026 23:37:53] Mensagem recebida!

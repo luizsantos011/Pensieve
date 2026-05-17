@@ -9,9 +9,11 @@ import me.luiz.penseira.contracts.IComando;
 import me.luiz.penseira.contracts.ILembrancaRepository;
 import me.luiz.penseira.contracts.ILogger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.api.objects.Document;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +26,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final Map<String, IComando> commandsMap = new HashMap<>();
 
     private final Dotenv dotenv = Dotenv.load();
+    private final String channelId = dotenv.get("TELEGRAM_CHANNEL_ID");
     private final List<Long> whitelist = loadWhitelist();
     private final Map<Long, Long> lastMessageTimestampByUser = new HashMap<>();
     private int messageCounter = 0;
@@ -72,7 +75,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             if(receivedMessage.hasText()) {
                 handleText(chatId, receivedMessage.getText(), update);
             }else if(receivedMessage.hasDocument()) {
-                handleDocument(receivedMessage.getDocument().getFileName());
+                handleDocument(receivedMessage.getDocument(), chatId);
             }
 
         }catch (AcessoNegadoException | AltaFrequenciaDeMensagensException | TamanhoMensagemInvalidoException e){
@@ -101,13 +104,27 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void handleDocument(String fileName) {
+    private void handleDocument(Document document, String chatId) {
+        String fileName = document.getFileName();
         List<String> allowedExtensions = Arrays.asList(".txt", ".docx", ".pdf");
-        boolean isSafe = allowedExtensions.stream().anyMatch(fileName.toLowerCase()::endsWith);
-        if(isSafe) {
-            //preciso de algo pra salvar os arquivos aqui!!
-        }else{
-            throw new ArquivoInvalidoException("Arquivo não suportado!");
+        boolean allowed = allowedExtensions.stream().anyMatch(ext -> fileName.toLowerCase().endsWith(ext));
+        if(allowed){
+            String fileId = document.getFileId();
+            SendDocument sendDocument = new SendDocument();
+            sendDocument.setChatId(channelId);
+            sendDocument.setDocument(new org.telegram.telegrambots.meta.api.objects.InputFile(fileId));
+            sendDocument.setCaption("Arquivo guardado: " + fileName);
+            try{
+                execute(sendDocument);
+            }catch (TelegramApiException e){
+                throw new RuntimeException("Erro ao tentar criar o arquivo guardado!");
+            }
+            SendMessage msg = new SendMessage();
+            msg.setChatId(chatId);
+            msg.setText("Documento recebido e armazenado com sucesso!");
+            executeResponse(msg);
+        }else {
+            throw new ArquivoInvalidoException("Tipo de arquivo não permitido. Envie um arquivo com extensão .txt, .docx ou .pdf.");
         }
     }
 
@@ -155,5 +172,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         Command(String commandValue) {
             this.commandValue = commandValue;
         }
+    }
+
+    public int getMessageCounter() {
+        return messageCounter;
     }
 }
