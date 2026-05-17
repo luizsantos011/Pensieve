@@ -75,7 +75,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             if(receivedMessage.hasText()) {
                 handleText(chatId, receivedMessage.getText(), update);
             }else if(receivedMessage.hasDocument()) {
-                handleDocument(receivedMessage.getDocument(), chatId);
+                String userCaption = receivedMessage.getCaption();
+                handleDocument(receivedMessage.getDocument(), chatId, userId, userCaption);
             }
 
         }catch (AcessoNegadoException | AltaFrequenciaDeMensagensException | TamanhoMensagemInvalidoException e){
@@ -104,7 +105,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void handleDocument(Document document, String chatId) {
+    private void handleDocument(Document document, String chatId,  long userId, String userCaption) {
         String fileName = document.getFileName();
         List<String> allowedExtensions = Arrays.asList(".txt", ".docx", ".pdf");
         boolean allowed = allowedExtensions.stream().anyMatch(ext -> fileName.toLowerCase().endsWith(ext));
@@ -113,7 +114,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             SendDocument sendDocument = new SendDocument();
             sendDocument.setChatId(channelId);
             sendDocument.setDocument(new org.telegram.telegrambots.meta.api.objects.InputFile(fileId));
-            sendDocument.setCaption("Arquivo guardado: " + fileName);
+            String folder = (userCaption != null && !userCaption.isBlank()) ? userCaption : "Geral";
+            sendDocument.setCaption(folder + " | Dono: " + userId + " | arquivo " + document.getFileName());
             try{
                 execute(sendDocument);
             }catch (TelegramApiException e){

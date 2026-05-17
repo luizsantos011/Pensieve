@@ -20,3 +20,6 @@
 [17/05/2026 09:26:35] Mensagem recebida!
 [17/05/2026 09:27:39] Mensagem recebida!
 [17/05/2026 09:27:47] Mensagem recebida!
+[17/05/2026 11:08:51] Bot iniciado com sucesso.
+[17/05/2026 11:09:20] Mensagem recebida!
+[17/05/2026 11:13:12] Mensagem recebida!
