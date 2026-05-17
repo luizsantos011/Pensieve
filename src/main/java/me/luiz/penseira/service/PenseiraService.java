@@ -5,12 +5,14 @@ import me.luiz.penseira.contracts.ILembrancaRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
 
 public class PenseiraService implements ILembrancaRepository {
     private final Path arquivoMemorias;
+    private final Path fileMetadata = Paths.get("file_metadata.txt");
 
     public PenseiraService(Path arquivoMemorias) {
         this.arquivoMemorias = arquivoMemorias;
@@ -30,6 +32,26 @@ public class PenseiraService implements ILembrancaRepository {
         try {
             if(!Files.exists(arquivoMemorias)) return Collections.emptyList();
             return Files.readAllLines(arquivoMemorias);
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void saveFileMetadata(String content) {
+        try{
+            Files.writeString(fileMetadata, content + System.lineSeparator(),
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<String> listFileMetadata() {
+        try {
+            if(!Files.exists(fileMetadata)) return Collections.emptyList();
+            return Files.readAllLines(fileMetadata);
         }catch(IOException e){
             throw new RuntimeException(e);
         }

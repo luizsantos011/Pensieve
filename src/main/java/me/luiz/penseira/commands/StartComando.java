@@ -13,7 +13,7 @@ public class StartComando implements IComando {
                 "/start   - Inicializa o assistente e exibe este menu\n" +
                 "/status  - Mostra o status do sistema e o contador de mensagens\n" +
                 "/tempo   - Exibe a data e hora atual do servidor\n" +
-                "/listar  - Exibe todas as notas ou lembretes\n" +
+                "/buscar  - Exibe todas as notas ou lembretes\n" +
                 "/limpar  - Remove notas ou lembretes\n" +
                 "/ajuda   - Use se precisar de ajuda em relação aos comandos\n\n" +
                 "Se você enviar qualquer texto comum (sem /), eu o salvarei automaticamente como uma nova nota.";

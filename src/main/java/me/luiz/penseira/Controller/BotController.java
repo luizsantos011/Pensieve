@@ -20,13 +20,13 @@ public class BotController {
     private final Path caminhoArquivo = Paths.get("memorias.txt");
     private final ILogger logger;
     private final TelegramBot bot;
-    private final ILembrancaRepository penseiraService;
+    private final ILembrancaRepository lembrancaRepository;
     private final Map<String, IComando> comandos = new HashMap<>();
 
     public BotController() {
         this.logger = new LogService(Paths.get("logs.txt"));
-        this.penseiraService = new PenseiraService(caminhoArquivo);
-        this.bot = new TelegramBot(logger, penseiraService, comandos);
+        this.lembrancaRepository = new PenseiraService(caminhoArquivo);
+        this.bot = new TelegramBot(logger, lembrancaRepository, comandos);
     }
 
     public void iniciarBot(){
@@ -46,6 +46,6 @@ public class BotController {
         comandos.put("/tempo", new TempoComando());
         comandos.put("/ajuda", new AjudaComando());
         comandos.put("/limpar", new LimparComando());
-        comandos.put("/listar", new ListarComando());
+        comandos.put("/buscar", new BuscarComando(lembrancaRepository));
     }
 }

@@ -23,3 +23,47 @@
 [17/05/2026 11:08:51] Bot iniciado com sucesso.
 [17/05/2026 11:09:20] Mensagem recebida!
 [17/05/2026 11:13:12] Mensagem recebida!
+[17/05/2026 14:10:34] Bot iniciado com sucesso.
+[17/05/2026 14:10:38] Mensagem recebida!
+[17/05/2026 14:10:48] Mensagem recebida!
+[17/05/2026 14:11:19] Bot iniciado com sucesso.
+[17/05/2026 14:11:22] Mensagem recebida!
+[17/05/2026 14:11:48] Mensagem recebida!
+[17/05/2026 14:12:01] Mensagem recebida!
+[17/05/2026 14:12:33] Mensagem recebida!
+[17/05/2026 14:12:49] Mensagem recebida!
+[17/05/2026 14:12:49] Erro inesperado.Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [400] Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 158
+[17/05/2026 14:12:49] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:13:03] Mensagem recebida!
+[17/05/2026 14:13:03] Erro inesperado.Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [400] Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 158
+[17/05/2026 14:13:03] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:13:07] Mensagem recebida!
+[17/05/2026 14:13:07] erro de negocio
+[17/05/2026 14:13:07] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:13:12] Mensagem recebida!
+[17/05/2026 14:13:17] Mensagem recebida!
+[17/05/2026 14:13:36] Mensagem recebida!
+[17/05/2026 14:14:09] Mensagem recebida!
+[17/05/2026 14:14:23] Mensagem recebida!
+[17/05/2026 14:14:24] Erro inesperado.Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [400] Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 158
+[17/05/2026 14:14:24] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:14:34] Mensagem recebida!
+[17/05/2026 14:14:34] Erro inesperado.Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [400] Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 158
+[17/05/2026 14:14:34] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:14:44] Mensagem recebida!
+[17/05/2026 14:15:23] Mensagem recebida!
+[17/05/2026 14:15:50] Mensagem recebida!
+[17/05/2026 14:24:29] Bot iniciado com sucesso.
+[17/05/2026 14:24:36] Mensagem recebida!
+[17/05/2026 14:24:39] Mensagem recebida!
+[17/05/2026 14:24:39] erro de negocio
+[17/05/2026 14:24:39] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:24:44] Mensagem recebida!
+[17/05/2026 14:24:58] Mensagem recebida!
+[17/05/2026 14:24:58] Erro inesperado.Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [400] Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 62
+[17/05/2026 14:24:58] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:25:24] Mensagem recebida!
+[17/05/2026 14:25:28] Mensagem recebida!
+[17/05/2026 14:25:28] erro de negocio
+[17/05/2026 14:25:28] Tentativa de acesso por usuario não autorizado.
+[17/05/2026 14:25:33] Mensagem recebida!

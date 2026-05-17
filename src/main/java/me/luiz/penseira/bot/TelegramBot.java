@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.api.objects.Document;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -94,7 +95,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         if(messageText.length() > 500){
             throw new TamanhoMensagemInvalidoException("Tamanho da mensagem excede o limite permitido.");
         }
-        IComando comando = commandsMap.get(messageText);
+        String commandKey = messageText.split(" ")[0];
+        IComando comando = commandsMap.get(commandKey);
         if(comando != null) {
             comando.executar(msg, update);
             executeResponse(msg);
@@ -118,6 +120,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             sendDocument.setCaption(folder + " | Dono: " + userId + " | arquivo " + document.getFileName());
             try{
                 execute(sendDocument);
+                String metadataLine = userId + ";" + folder + ";" + fileName + ";" + document.getFileId();
+                lembrancaRepository.saveFileMetadata(metadataLine);
             }catch (TelegramApiException e){
                 throw new RuntimeException("Erro ao tentar criar o arquivo guardado!");
             }
@@ -165,7 +169,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         START("/start"),
         STATUS("/status"),
         TEMPO("/tempo"),
-        LISTAR("/listar"),
+        BUSCAR("/buscar"),
         LIMPAR("/limpar"),
         AJUDA("/ajuda");
 
