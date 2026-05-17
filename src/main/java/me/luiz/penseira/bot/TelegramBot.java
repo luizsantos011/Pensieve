@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class TelegramBot extends TelegramLongPollingBot {
     private final ILogger logger;
     private final ILembrancaRepository lembrancaRepository;
-    private final Map<String, IComando> commandsMap = new HashMap<>();
+    private Map<String, IComando> commandsMap = new HashMap<>();
 
     private final Dotenv dotenv = Dotenv.load();
     private final String channelId = dotenv.get("TELEGRAM_CHANNEL_ID");
@@ -32,7 +32,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private int messageCounter = 0;
 
     public TelegramBot(ILogger logger,  ILembrancaRepository lembrancaRepository, Map<String, IComando> commandsMap) {
-        this.commandsMap.putAll(commandsMap);
+        this.commandsMap = commandsMap;
         this.logger = logger;
         this.lembrancaRepository = lembrancaRepository;
     }

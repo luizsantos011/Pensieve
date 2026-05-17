@@ -27,11 +27,11 @@ public class BotController {
         this.logger = new LogService(Paths.get("logs.txt"));
         this.penseiraService = new PenseiraService(caminhoArquivo);
         this.bot = new TelegramBot(logger, penseiraService, comandos);
-        inicializarComandos();
     }
 
     public void iniciarBot(){
         try{
+            inicializarComandos();
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);
             logger.registrarLog("Bot iniciado com sucesso.");
