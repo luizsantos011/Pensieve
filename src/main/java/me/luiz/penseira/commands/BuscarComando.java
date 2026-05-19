@@ -9,13 +9,17 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import static java.util.Locale.filter;
 
 public class BuscarComando implements IComando {
     private final ILembrancaRepository lembrancaRepository;
-    public BuscarComando(ILembrancaRepository lembrancaRepository) {
+    private final BiConsumer<String, String> documentSender;
+
+    public BuscarComando(ILembrancaRepository lembrancaRepository, BiConsumer<String, String> documentSender) {
         this.lembrancaRepository = lembrancaRepository;
+        this.documentSender = documentSender;
     }
 
     @Override
@@ -40,6 +44,7 @@ public class BuscarComando implements IComando {
                 sendDoc.setChatId(msg.getChatId());
                 sendDoc.setDocument(new InputFile(fileid));
                 sendDoc.setCaption("Arquivo encontrado: " + data[2]);
+                documentSender.accept(msg.getChatId(), fileid);
             }
         }
         if(results.length() == 0){

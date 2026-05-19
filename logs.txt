@@ -67,3 +67,5 @@
 [17/05/2026 14:25:28] erro de negocio
 [17/05/2026 14:25:28] Tentativa de acesso por usuario não autorizado.
 [17/05/2026 14:25:33] Mensagem recebida!
+[18/05/2026 23:51:43] Bot iniciado com sucesso.
+[18/05/2026 23:51:58] Mensagem recebida!

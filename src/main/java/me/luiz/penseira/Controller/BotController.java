@@ -46,6 +46,19 @@ public class BotController {
         comandos.put("/tempo", new TempoComando());
         comandos.put("/ajuda", new AjudaComando());
         comandos.put("/limpar", new LimparComando());
-        comandos.put("/buscar", new BuscarComando(lembrancaRepository));
+
+        comandos.put("/buscar", new BuscarComando(lembrancaRepository, (chatId, fileId) -> {
+            try {
+                org.telegram.telegrambots.meta.api.methods.send.SendDocument sendDocument =
+                        new org.telegram.telegrambots.meta.api.methods.send.SendDocument();
+                sendDocument.setChatId(chatId);
+                sendDocument.setDocument(new org.telegram.telegrambots.meta.api.objects.InputFile(fileId));
+
+                bot.execute(sendDocument);
+            } catch (Exception e) {
+                logger.registrarLog("Erro ao disparar documento via Lambda no BuscarComando: " + e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }));
     }
 }
