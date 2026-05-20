@@ -7,4 +7,5 @@ public interface ILembrancaRepository {
     List<String> listar();
     void saveFileMetadata(String content);
     List<String> listFileMetadata();
+    void atualizarMetadata(List<String> linhas);
 }

@@ -45,8 +45,7 @@ public class BotController {
         comandos.put("/status", new StatusComando(bot));
         comandos.put("/tempo", new TempoComando());
         comandos.put("/ajuda", new AjudaComando());
-        comandos.put("/limpar", new LimparComando());
-
+        comandos.put("/remover", new RemoverComando(lembrancaRepository));
         comandos.put("/buscar", new BuscarComando(lembrancaRepository, (chatId, fileId) -> {
             try {
                 org.telegram.telegrambots.meta.api.methods.send.SendDocument sendDocument =

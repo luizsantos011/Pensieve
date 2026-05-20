@@ -56,4 +56,18 @@ public class PenseiraService implements ILembrancaRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void atualizarMetadata(List<String> linhas) {
+        try {
+            java.nio.file.Files.write(
+                    this.fileMetadata,
+                    linhas,
+                    java.nio.file.StandardOpenOption.CREATE,
+                    java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+            );
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Erro ao atualizar o arquivo de metadados: " + e.getMessage());
+        }
+    }
 }

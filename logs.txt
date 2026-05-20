@@ -69,3 +69,9 @@
 [17/05/2026 14:25:33] Mensagem recebida!
 [18/05/2026 23:51:43] Bot iniciado com sucesso.
 [18/05/2026 23:51:58] Mensagem recebida!
+[19/05/2026 21:33:53] Bot iniciado com sucesso.
+[19/05/2026 21:34:41] Mensagem recebida!
+[19/05/2026 21:38:39] Mensagem recebida!
+[19/05/2026 21:38:48] Mensagem recebida!
+[19/05/2026 21:38:50] Erro inesperado.Error executing org.telegram.telegrambots.meta.api.methods.send.SendMessage query: [400] Bad Request: can't parse entities: Can't find end of the entity starting at byte offset 162
+[19/05/2026 21:38:50] Tentativa de acesso por usuario não autorizado.
